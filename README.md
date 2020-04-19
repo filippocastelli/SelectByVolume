@@ -1,5 +1,5 @@
 # SelectByVolume
-Blender 
+Blender addon for volume-based object selection. 
 
 ## Requirements
 *SelectByVolume* can be installed on Blender > 2.80
