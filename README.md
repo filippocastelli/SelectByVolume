@@ -6,11 +6,17 @@ Blender addon for volume-based object selection.
 ## Install
 Download the latest release as a zip archive, in Blender go to **Edit > Preferences > Add-ons > Install** and choose `SelectByVolume.zip`.   
 Ensure that you have activated the plugin by ticking its box and you're ready to go!
+<p align="center">
+  <img src="img/addon_prefs.PNG" width="500">
+</p>
 
-![Install Screenshot](img/screenshot.PNG?raw=true "Title")
 
 ## Usage
-In the *3D Viewer* mode, opening the side tab, under *Tools* you should be able to find the *Select Objects by Volume* panel. 
+In the *3D Viewer* mode, opening the side tab, under *Tools* you should be able to find the *Select Objects by Volume* panel.
+
+<p align="center">
+  <img src="img/screenshot.PNG">
+</p>
 
 You can choose a min and a max volume to bound your selection to and click on **Select by volume**: as simple as that.
 
