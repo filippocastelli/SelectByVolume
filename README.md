@@ -20,8 +20,9 @@ In the *3D Viewer* mode, opening the side tab, under *Tools* you should be able 
 
 You can choose a min and a max volume to bound your selection to and click on **Select by volume**: as simple as that.
 
-If you're dealing with a large file with lots of objects you can enable the multithreading by ticking **use multithreading** to make best use of your CPU cores.
-Selection can be furter speed up by storing and re-using the volume calculations with the **use cached volumes** button
+If you're dealing with large files and lots of objects you can enable the multithreading support by ticking **use multithreading** in order to make the best use of your CPU cores.
+
+Selection can be furter sped up by caching volume calculations with the **use cached volumes** button
 
 ## Notes
 - **NOTE**: remember to do a run disabling the cache whenever you make changes to your objects.
