@@ -43,8 +43,10 @@ bpy.types.Scene.sbv_use_cached = BoolProperty(name="use cached volumes",
 
 bpy.types.Scene.sbv_vol_max = FloatProperty(name="max volume",
                                             description="Max volume selected.",
+                                            min=0.,
                                             default=10000.)
 
 bpy.types.Scene.sbv_vol_min = FloatProperty(name="min volume",
                                             description="Min volume selected.",
+                                            min=0.,
                                             default=0.)
