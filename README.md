@@ -30,7 +30,7 @@ Selection can be furter sped up by caching volume calculations with the **use ca
 
 ### Multiple Range Selection
 <p align="center">
-  <img src="img/simple_usage.gif">
+  <img src="img/multi_usage.gif">
 </p>
 If you need more than just selecting a simple range, you can use the **Multiple Range Selection** mode.
 
