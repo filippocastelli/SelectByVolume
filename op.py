@@ -3,7 +3,7 @@ from bpy.props import FloatProperty, BoolProperty, PointerProperty
 
 import threading, multiprocessing
 
-from .split_chunks import split_chunks
+from .utils import random_color, split_chunks
 
 class SelectByVolume_OT_Operator(bpy.types.Operator):
     bl_idname = "view3d.selectbyvolumeop"
