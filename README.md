@@ -54,7 +54,7 @@ In the **materials** section you can find the **Apply All Materials** button tha
 ## Planned Features 
 - *Delete cache* button
 - Automatic cache reset on mesh changes
-- Colormap based material color assignment
+- ~~Colormap based material color assignment~~ 
 - Manual election of a "base" material to build all materials on
 
 ## Contacts
