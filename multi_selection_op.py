@@ -1,37 +1,39 @@
 import bpy
+import numpy as np
+
 from bpy.types import Operator
 from bpy.props import IntProperty
 
-from .utils import random_color, strictly_increasing, VolumeSelector, MaterialApplier
-from .colors import hex_colors
+from .utils import strictly_increasing, VolumeSelector, MaterialApplier
 
-# GLOBAL OPERATORS
-class AddInputField_OT_Operator(Operator):
-    bl_idname = "view3d.addinputfield"
-    bl_label = "Create New Threshold"
-    bl_description = "Create New Threshold"
-
+class InputFieldManager():
     @staticmethod
-    def _get_last_volume(inputfields):
+    def get_last_volume(context):
+        inputfields = context.scene.inputfields
         if len(inputfields) > 0:
             last_inputfield = inputfields[-1]
             return last_inputfield.threshold
         else:
             return 0.
-
-    def _generate_field(self, context):
+        
+    @classmethod
+    def add_field(cls, context, volume=None):
+        inputfields = context.scene.inputfields
         current_field_n = len(context.scene.inputfields)
-        current_volume = self._get_last_volume(context.scene.inputfields)
+        new_volume = volume if volume is not None else cls.get_last_volume(context)
         newfield = context.scene.inputfields.add()
-        newfield.id = current_field_n
-        newfield.name = "Slice {}".format(current_field_n)
-        newfield.threshold = current_volume
 
-        self._generate_material(newfield, current_field_n, context)
-        #print("Adding: now inputfields is {} long".format(len(context.scene.inputfields)))
+        newfield.name =  "Slice {}".format(current_field_n)
+        newfield.threshold = new_volume
+        cls.generate_material(newfield, current_field_n, context)
+    
+    @classmethod
+    def remove_field(cls, context):
+        current_field_n = len(context.scene.inputfields)
+        context.scene.inputfields.remove(current_field_n -1)
 
     @staticmethod
-    def _generate_material(input_field, current_field_n, context):
+    def generate_material(input_field, current_field_n, context):
         material_name = "material_{}".format(current_field_n)
 
         try :
@@ -39,18 +41,28 @@ class AddInputField_OT_Operator(Operator):
             input_field.material = assigned_material
         except IndexError:
             assigned_material = bpy.data.materials.new(name=material_name)
-            col = random_color()
-            rgb_color = (col.r, col.g, col.b)
-            alpha = 1.0
-            MaterialApplier.apply_color_to_material(assigned_material, rgb_color, alpha)
+            color_vals, alpha = MaterialApplier.apply_rnd_color_to_material(assigned_material, return_color=True)
             input_field.material = assigned_material
-            input_field.color = rgb_color
+            input_field.color = color_vals
             input_field.alpha = alpha
             new_custom_material = context.scene.custom_materials.add()
             new_custom_material.material = assigned_material
+    
+    @classmethod
+    def add_multiple_fields(cls, context, volumes):
+        for volume in volumes:
+            cls.add_field(context, volume=volume)
+
+
+
+# GLOBAL OPERATORS
+class AddInputField_OT_Operator(Operator):
+    bl_idname = "view3d.addinputfield"
+    bl_label = "Create New Threshold"
+    bl_description = "Create New Threshold"
 
     def execute(self, context):
-        self._generate_field(context)
+        InputFieldManager.add_field(context)
         return {"FINISHED"}
 
 class RemoveInputField_OT_Operator(Operator):
@@ -58,13 +70,8 @@ class RemoveInputField_OT_Operator(Operator):
     bl_label = "Remove Threshold"
     bl_description = "Remove Threshold"
 
-    def _remove_field(self, context):
-        current_field_n = len(context.scene.inputfields)
-        context.scene.inputfields.remove(current_field_n -1)
-        #print("Removing: now inputfields is {} long".format(len(context.scene.inputfields)))
-
     def execute(self, context):
-        self._remove_field(context)
+        InputFieldManager.remove_field(context)
         return {"FINISHED"}
 
     @classmethod
@@ -96,6 +103,27 @@ class ResetFields_OT_Operator(Operator):
             bpy.data.materials.remove(mat)
         context.scene.custom_materials.clear()
 
+class GenerateSpaced_OT_Operator(Operator):
+
+    bl_idname = "view3d.generatespaced"
+    bl_label = "Generate Multiple Selections"
+    bl_description = "Generate Multiple Selections"
+
+    def _get_props(self, context):
+        self.max_volume = context.scene.sbv_spacing_max
+        self.min_volume = context.scene.sbv_spacing_min
+        self.spacings = context.scene.sbv_spacings
+        self.logspace = context.scene.sbv_logspace
+
+    def execute(self, context):
+        self._get_props(context)
+        bpy.ops.view3d.resetfields()
+        if self.logspace:
+            inputfield_values = np.geomspace(start=self.min_volume, stop=self.max_volume, num=self.spacings +1)[1:]
+        else:
+            inputfield_values = np.linspace(start=self.min_volume, stop=self.max_volume, num=self.spacings +1)[1:]
+        InputFieldManager.add_multiple_fields(context, inputfield_values)
+        return {"FINISHED"}
 
 # SECTION OPERATORS
 class ChunkSelectBase:
@@ -151,70 +179,3 @@ class ApplyMaterials_OT_Operator(Operator, ChunkSelectBase):
         MaterialApplier.apply_material(self.selected_items, self.material)
         return {"FINISHED"}
 
-
-class ApplyAllMaterials_OT_Operator(Operator):
-    bl_idname = "view3d.applyallmaterialsop"
-    bl_label = "Apply all Materials"
-    bl_description = "Apply all Materials"
-
-    def _get_props(self, context):
-        self.inputfield_list = context.scene.inputfields
-        self.mesh_list = VolumeSelector.get_meshes()
-        self.use_cached = context.scene.sbv_use_cached
-
-    def execute(self, context):
-        self._get_props(context)
-        for i, inputfield in enumerate(self.inputfield_list):
-            vol_min, vol_max = ChunkSelectBase.get_volume_bounds(context, i)
-            material = inputfield.material
-            selected_items = self._select_range(vol_min, vol_max)
-            if len(selected_items) > 0:
-                MaterialApplier.apply_material(selected_items, material)
-        bpy.ops.object.select_all(action='DESELECT')
-
-        return {"FINISHED"}
-
-    def _select_range(self, vol_min, vol_max):
-        bpy.ops.object.select_all(action='DESELECT')
-        return VolumeSelector.select_items(self.mesh_list, vol_min, vol_max, use_cached=self.use_cached, verbose=False)
-
-    @staticmethod
-    def _get_materials(context):
-        inputfields = context.scene.inputfields
-        materials = []
-        for field in inputfields:
-            materials.append(field.material)
-        return materials
-    
-    @staticmethod
-    def _get_colors(context):
-        color_0 = hex_colors["blue"]
-        color_1 = hex_colors["red"]
-
-        return [color_0, color_1]
-
-class ApplyColormap_OT_Operator(Operator):
-    bl_idname = "view3d.applycolormap"
-    bl_label = "Apply a ColorMap"
-    bl_description = "Apply Colormap"
-
-    def execute(self, context):
-        materials = self._get_materials(context)
-        control_colors = self._get_colors(context)
-        MaterialApplier.apply_colormap_to_material_list(materials, control_colors)
-        return {"FINISHED"}
-
-    @staticmethod
-    def _get_materials(context):
-        inputfields = context.scene.inputfields
-        materials = []
-        for field in inputfields:
-            materials.append(field.material)
-        return materials
-    
-    @staticmethod
-    def _get_colors(context):
-        color_0 = hex_colors["blue"]
-        color_1 = hex_colors["red"]
-
-        return [color_0, color_1]

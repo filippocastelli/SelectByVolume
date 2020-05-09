@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Filippo Maria Castelli",
     "description" : "Select meshes by their volume",
     "blender" : (2, 80, 0),
-    "version" : (0, 1, 0),
+    "version" : (0, 2, 0),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic"
@@ -25,9 +25,10 @@ bl_info = {
 import bpy
  
 from bpy.props import BoolProperty, FloatProperty, CollectionProperty, IntProperty, StringProperty, CollectionProperty, PointerProperty
-from .property_groups import MaterialGroup, InputFieldGroup
+from .property_groups import MaterialGroup, InputFieldGroup, ColormapGroup
 from .select_volume_op import SelectByVolume_OT_Operator
-from .multi_selection_op import AddInputField_OT_Operator, ResetFields_OT_Operator, RemoveInputField_OT_Operator, ApplyMaterials_OT_Operator, SelectChunk_OT_Operator, ApplyColormap_OT_Operator, ApplyAllMaterials_OT_Operator
+from .multi_selection_op import AddInputField_OT_Operator, ResetFields_OT_Operator, RemoveInputField_OT_Operator, ApplyMaterials_OT_Operator, SelectChunk_OT_Operator, GenerateSpaced_OT_Operator
+from .material_op import ApplyAllMaterials_OT_Operator, ApplyColormap_OT_Operator, RandomizeColors_OT_Operator
 from .panel import SelectByVolume_PT_Panel
 
 # REGISTERING / UNREGISTERING  CLASSES
@@ -39,6 +40,7 @@ from .panel import SelectByVolume_PT_Panel
 # CUSTOM PROPS REGISTERING
 bpy.utils.register_class(InputFieldGroup)
 bpy.utils.register_class(MaterialGroup)
+bpy.utils.register_class(ColormapGroup)
 
 classes = (SelectByVolume_OT_Operator,
            SelectByVolume_PT_Panel,
@@ -48,7 +50,9 @@ classes = (SelectByVolume_OT_Operator,
            SelectChunk_OT_Operator,
            ApplyMaterials_OT_Operator,
            ApplyColormap_OT_Operator,
-           ApplyAllMaterials_OT_Operator
+           ApplyAllMaterials_OT_Operator,
+           RandomizeColors_OT_Operator,
+           GenerateSpaced_OT_Operator
            )
 
 fac_register, fac_unregister = bpy.utils.register_classes_factory(classes)
@@ -92,3 +96,8 @@ bpy.types.Scene.custom_materials = CollectionProperty(type=MaterialGroup)
 bpy.types.Scene.theChosenObject = StringProperty()
 
 bpy.types.Scene.selectedBaseMaterial = PointerProperty(name="Material", type=bpy.types.Material)
+bpy.types.Scene.sbv_colormaps = bpy.props.PointerProperty(type=ColormapGroup)
+bpy.types.Scene.sbv_spacing_max = bpy.props.FloatProperty(name="Max Volume", min=0.00001, default=0.00001, description="spacing max volume")
+bpy.types.Scene.sbv_spacing_min = bpy.props.FloatProperty(name="Min Volume", min=0.00001, default=0.00001, description="spacing min volume")
+bpy.types.Scene.sbv_spacings = bpy.props.IntProperty(name="slices", min=0, default=1, description="slices")
+bpy.types.Scene.sbv_logspace = bpy.props.BoolProperty(name="logspace", default=True)

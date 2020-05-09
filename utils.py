@@ -87,29 +87,59 @@ class MaterialApplier():
     @staticmethod
     def _material_write(object, material):
         if object.data.materials:
-            object.data.materials[0] = material
+            if object.data.materials[0] != material:
+                object.data.materials[0] = material
         else:
             object.data.materials.append(material)
 
 
-    @staticmethod
-    def gen_colormap(hex_colors, n_steps):
+    @classmethod
+    def gen_colormap(cls, hex_colors, n_steps):
         "takes list of hex colors, returns polylinear gradient interpolated colors in RGB format"
-        return polylinear_gradient(hex_colors, n_steps)
+        rgb_8bit_values = polylinear_gradient(hex_colors, n_steps)
+        return cls.normalize_color_list(rgb_8bit_values)
+
+    @staticmethod
+    def normalize_color(color):
+        normalized = []
+        for channel in color:
+            normalized.append(channel/255)
+        return normalized
     
     @classmethod
-    def apply_colormap_to_material_list(cls, material_list, hex_colors):
+    def normalize_color_list(cls, color_list):
+        normalized_list = []
+
+        for color in color_list:
+            normalized_list.append(cls.normalize_color(color))
+
+        return normalized_list
+    
+    @classmethod
+    def apply_colormap_to_material_list(cls, material_list, hex_colors, verbose=False):
         n_steps = len(material_list)
         colormap = cls.gen_colormap(hex_colors, n_steps)
         assert len(colormap) == n_steps, "Wrong colormap dimension"
 
         for i, material in enumerate(material_list):
-            cls.apply_color_to_material(material, colormap[i], alpha=1.0)
+            cls.apply_color_to_material(material, colormap[i], alpha=1.0, verbose=verbose)
 
     @staticmethod
     def hextorgb(hex_color):
         return hex_to_RGB(hex_color)
 
     @staticmethod
-    def apply_color_to_material(material, rgb_color, alpha=1.0):
+    def apply_color_to_material(material, rgb_color, alpha=1.0, verbose=False):
+        if verbose:
+            print("Applying color {} to material {}".format(rgb_color, material.name))
         material.diffuse_color = (*rgb_color, alpha)
+
+    @classmethod
+    def apply_rnd_color_to_material(cls, material, return_color=False, verbose=False):
+        color = random_color()
+        color_vals = (color.r, color.g, color.b)
+        alpha = 1.0
+        cls.apply_color_to_material(material, color_vals, verbose=verbose)
+
+        if return_color:
+            return color_vals, alpha

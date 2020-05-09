@@ -27,3 +27,25 @@ class MaterialGroup(PropertyGroup):
     alpha : FloatProperty(
         min = 0.,
         max = 1)
+
+
+class ColormapGroup(bpy.types.PropertyGroup):
+    colormap : bpy.props.EnumProperty(
+        items=[
+        ("0", "yellow_red", "yellow_red"),
+        ("1", "iridis", "iridis"),
+        ("2", "blue_red", "blue_red"),
+        ("3", "white_black", "white_black"),
+        ("4", "rgb", "rgb"),
+    ],
+        description="colormap",
+        default="0"
+    )
+
+supported_colormaps = {
+    "0" : ["yellow", "red"],
+    "1" : ["yellow", "green", "blue", "violet"],
+    "2" : ["blue", "red"],
+    "3" : ["white", "black"],
+    "4" : ["red", "green", "blue"]
+}
