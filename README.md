@@ -40,8 +40,13 @@ You can select each individual threshold by clicking on the different **SELECT**
 
 Each volume threshold introduces by default a basic material with a random color which you can edit but is not assigned until you either click on the **APPLY MATERIAL** button on each selection or just use the **Apply Materials to All Selections** button.
 
-Lastly you can reset all the volume thresholds using **Reset Thresholds**, this deletes all the selection thresholds you may have created. This operation does not delete the created materials (that you might have edited and might not want to delete) unless the **reset materials** option is selected.
+You can reset all the volume thresholds using **Reset Thresholds**, this deletes all the selection thresholds you may have created. This operation does not delete the created materials (that you might have edited and might not want to delete) unless the **reset materials** option is selected.
 
+It's possible to define a number of linearly or geometrically spaced selection thresholds using the **Lin/Log Spaced Selections** button, you just need to define a min., a max. volume and the number of selections you want to make, the previous thresholds will be deleted and substituted by new equally spaced ones.
+
+### Materials and Colors
+
+In the **materials** section you can find the **Apply All Materials** button that lets you apply the previously generated materials all at once once your materials are in place you can manage their colors all at once either by randomizing them with the **Randomize Colors** button or by using one of the predefined colormaps.
 ## Notes
 - **NOTE**: remember to do a volume selection run disabling the cache whenever you make changes to your objects.
 - **NOTE**: by using the cache functionality you're adding a `sbv_volume` property to your objects, there are virtually no scenarios in which this creates problems but notice it's there.
