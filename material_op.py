@@ -15,6 +15,7 @@ class ApplyAllMaterials_OT_Operator(Operator):
         self.inputfield_list = context.scene.inputfields
         self.mesh_list = VolumeSelector.get_meshes()
         self.use_cached = context.scene.sbv_use_cached
+        self.id_string = context.scene.sbv_id_string
 
     def execute(self, context):
         self._get_props(context)
@@ -30,7 +31,13 @@ class ApplyAllMaterials_OT_Operator(Operator):
 
     def _select_range(self, vol_min, vol_max):
         bpy.ops.object.select_all(action='DESELECT')
-        return VolumeSelector.select_items(self.mesh_list, vol_min, vol_max, use_cached=self.use_cached, verbose=False)
+        return VolumeSelector.select_items(
+            object_list=self.mesh_list,
+            vol_min=vol_min,
+            vol_max=vol_max,
+            id_string=self.id_string,
+            use_cached=self.use_cached,
+            verbose=False)
 
     @staticmethod
     def _get_materials(context):

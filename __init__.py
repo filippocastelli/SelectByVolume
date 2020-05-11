@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Filippo Maria Castelli",
     "description" : "Select meshes by their volume",
     "blender" : (2, 80, 0),
-    "version" : (0, 2, 0),
+    "version" : (0, 2, 1),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic"
@@ -96,8 +96,9 @@ bpy.types.Scene.custom_materials = CollectionProperty(type=MaterialGroup)
 bpy.types.Scene.theChosenObject = StringProperty()
 
 bpy.types.Scene.selectedBaseMaterial = PointerProperty(name="Material", type=bpy.types.Material)
-bpy.types.Scene.sbv_colormaps = bpy.props.PointerProperty(type=ColormapGroup)
-bpy.types.Scene.sbv_spacing_max = bpy.props.FloatProperty(name="Max Volume", min=0.00001, default=0.00001, description="spacing max volume")
-bpy.types.Scene.sbv_spacing_min = bpy.props.FloatProperty(name="Min Volume", min=0.00001, default=0.00001, description="spacing min volume")
-bpy.types.Scene.sbv_spacings = bpy.props.IntProperty(name="slices", min=0, default=1, description="slices")
-bpy.types.Scene.sbv_logspace = bpy.props.BoolProperty(name="logspace", default=True)
+bpy.types.Scene.sbv_colormaps = PointerProperty(type=ColormapGroup)
+bpy.types.Scene.sbv_spacing_max = FloatProperty(name="Max Volume", min=0.00001, default=0.00001, description="spacing max volume")
+bpy.types.Scene.sbv_spacing_min = FloatProperty(name="Min Volume", min=0.00001, default=0.00001, description="spacing min volume")
+bpy.types.Scene.sbv_spacings = IntProperty(name="slices", min=0, default=1, description="slices")
+bpy.types.Scene.sbv_logspace = BoolProperty(name="logspace", default=True)
+bpy.types.Scene.sbv_id_string = StringProperty(name="id_string")

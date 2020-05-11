@@ -132,7 +132,12 @@ class ChunkSelectBase:
         self.get_props(context)
         #print("Pressed button ", self.id, self.inputfield.name)
         bpy.ops.object.select_all(action='DESELECT')
-        self.selected_items = VolumeSelector.select_items(self.mesh_list, self.vol_min, self.vol_max, use_cached=self.use_cached, verbose=False)
+        self.selected_items = VolumeSelector.select_items(object_list=self.mesh_list,
+                                                        vol_min=self.vol_min,
+                                                        vol_max=self.vol_max,
+                                                        id_string=self.id_string,
+                                                        use_cached=self.use_cached,
+                                                        verbose=False)
         return {'FINISHED'}
 
     def get_props(self, context):
@@ -141,6 +146,7 @@ class ChunkSelectBase:
         self.use_cached = context.scene.sbv_use_cached
         self.mesh_list = VolumeSelector.get_meshes()
         self.material = self.inputfield.material
+        self.id_string = context.scene.sbv_id_string
 
     def invoke(self, context, event):
         return self.execute(context)

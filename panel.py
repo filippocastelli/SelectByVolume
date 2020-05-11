@@ -64,6 +64,8 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
         flags_box.label(text="global options")
         flags_box.row().prop(context.scene, "sbv_use_multithread")
         flags_box.row().prop(context.scene, "sbv_use_cached") 
+        id_string_row = flags_box.row() 
+        id_string_row.prop(context.scene, "sbv_id_string")
 
         info_box = layout.box()
         info_box.label(text="selection info")

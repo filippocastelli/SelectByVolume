@@ -16,6 +16,7 @@ class SelectByVolume_OT_Operator(Operator):
         self.use_cached = context.scene.sbv_use_cached
         self.vol_max = context.scene.sbv_vol_max
         self.vol_min = context.scene.sbv_vol_min
+        self.id_string = context.scene.sbv_id_string
 
     def execute(self, context):
         #deselect all
@@ -27,7 +28,7 @@ class SelectByVolume_OT_Operator(Operator):
         if self.multithread:
             print("Using multithreaded mode")
             scene_meshes_chunks = list(split_chunks(scene_meshes, multiprocessing.cpu_count()))
-            threads = [threading.Thread(target=VolumeSelector.select_items, args=(obj_list, self.vol_min, self.vol_max, self.use_cached)) for obj_list in scene_meshes_chunks]
+            threads = [threading.Thread(target=VolumeSelector.select_items, args=(obj_list, self.vol_min, self.vol_max, self.id_string, self.use_cached)) for obj_list in scene_meshes_chunks]
             
             for i, thread in enumerate(threads):
                 # print("Starting thread {} / {}".format(i, len(threads)))
@@ -37,7 +38,11 @@ class SelectByVolume_OT_Operator(Operator):
                 thread.join()
         else:
             print("Using single-threaded mode")
-            VolumeSelector.select_items(scene_meshes, self.vol_min, self.vol_max, self.use_cached)
+            VolumeSelector.select_items(object_list=scene_meshes,
+                                        vol_min=self.vol_min,
+                                        vol_max=self.vol_max,
+                                        id_string=self.id_string,
+                                        use_cached=self.use_cached)
 
         return {"FINISHED"}
     

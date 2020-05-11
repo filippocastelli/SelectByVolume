@@ -53,12 +53,13 @@ class VolumeSelector():
         return volume
     
     @classmethod
-    def select_items(cls, object_list, vol_min, vol_max, use_cached=False, verbose=False):
+    def select_items(cls, object_list, vol_min, vol_max, id_string=None, use_cached=False, verbose=False):
         selected_items = []
         first_active = False
         for object in object_list:
             volume = cls.get_volume(object, use_cached=use_cached, verbose=verbose)
-            if volume > vol_min and volume < vol_max:
+            is_neuron = id_string in object.name if id_string else True
+            if volume > vol_min and volume < vol_max and is_neuron:
                 if not first_active:
                     bpy.context.view_layer.objects.active = object
                     first_active = True

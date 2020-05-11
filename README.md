@@ -26,7 +26,9 @@ In the *3D Viewer* mode, opening the side tab, under *Tools* you should be able 
 
 In **Simple Range Selection** mode you can choose a min and a max volume to bound your selection to and click on **Select by volume**: as simple as that.
 
-Selection can be furter sped up by caching volume calculations with the **use cached volumes** button
+Selection can be furter sped up by caching volume calculations with the **use cached volumes** button.
+
+If you wish only objects that include some kind of identifier in their name to be included in the query, you can specify it in the **string_id** field: only objects that contain that string will be selected.
 
 ### Multiple Range Selection
 <p align="center">
