@@ -3,7 +3,8 @@ from bpy.props import FloatProperty, BoolProperty, PointerProperty, IntProperty
 from bpy.types import Operator
 import threading, multiprocessing
 
-from .utils import split_chunks, VolumeSelector
+from .utils import split_chunks
+from .volume_selector import VolumeSelector
 
 class SelectByVolume_OT_Operator(Operator):
     """Select by Volume Button simple selection"""
