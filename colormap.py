@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import random as rnd
+from .utils import even_select
 
 
 def hex_to_RGB(hex):
@@ -67,7 +68,9 @@ def polylinear_gradient(colors, n):
       all sequential pairs of colors. "n" specifies the total
       number of desired output colors """
     # The number of colors per individual linear gradient
-    steps_per_gradient = n // (len(colors) -1)
+    altmode = (n < len(colors) -1)
+
+    steps_per_gradient = n // (len(colors) -1) if not altmode else 1
     remainder_steps = n % (len(colors) -1)
     
     gradient_list = []
@@ -79,8 +82,9 @@ def polylinear_gradient(colors, n):
         else:
             gradient_list += linear_gradient(colors[i], colors[i+1], steps_per_gradient + remainder_steps +1)[1:]
     
+    if altmode:
+        gradient_list = even_select(gradient_list, n)
     return gradient_list   
-
 
 
 def colordict2tcolors(colordict):
