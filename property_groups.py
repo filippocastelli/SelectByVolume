@@ -37,15 +37,19 @@ class ColormapGroup(bpy.types.PropertyGroup):
         ("2", "blue_red", "blue_red"),
         ("3", "white_black", "white_black"),
         ("4", "rgb", "rgb"),
+        ("5", "viridis", "viridis")
     ],
         description="colormap",
         default="0"
     )
 
+viridis = ["#440154","#461768","#472C7A","#424085","#3B528B","#33638D","#2C738E","#26838F","#22928C","#2AA483","#56C068","#81D34D","#ABDC32","#D5E228","#FEE825"]
 supported_colormaps = {
     "0" : ["yellow", "red"],
     "1" : ["yellow", "green", "blue", "violet"],
     "2" : ["blue", "red"],
     "3" : ["white", "black"],
-    "4" : ["red", "green", "blue"]
+    "4" : ["red", "green", "blue"],
+    "5" : viridis
 }
+
