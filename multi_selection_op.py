@@ -4,56 +4,10 @@ import numpy as np
 from bpy.types import Operator
 from bpy.props import IntProperty
 
-from .utils import strictly_increasing, VolumeSelector, MaterialApplier
-
-class InputFieldManager():
-    @staticmethod
-    def get_last_volume(context):
-        inputfields = context.scene.inputfields
-        if len(inputfields) > 0:
-            last_inputfield = inputfields[-1]
-            return last_inputfield.threshold
-        else:
-            return 0.
-        
-    @classmethod
-    def add_field(cls, context, volume=None):
-        inputfields = context.scene.inputfields
-        current_field_n = len(context.scene.inputfields)
-        new_volume = volume if volume is not None else cls.get_last_volume(context)
-        newfield = context.scene.inputfields.add()
-
-        newfield.name =  "Slice {}".format(current_field_n)
-        newfield.threshold = new_volume
-        cls.generate_material(newfield, current_field_n, context)
-    
-    @classmethod
-    def remove_field(cls, context):
-        current_field_n = len(context.scene.inputfields)
-        context.scene.inputfields.remove(current_field_n -1)
-
-    @staticmethod
-    def generate_material(input_field, current_field_n, context):
-        material_name = "material_{}".format(current_field_n)
-
-        try :
-            assigned_material = context.scene.custom_materials[current_field_n].material
-            input_field.material = assigned_material
-        except IndexError:
-            assigned_material = bpy.data.materials.new(name=material_name)
-            color_vals, alpha = MaterialApplier.apply_rnd_color_to_material(assigned_material, return_color=True)
-            input_field.material = assigned_material
-            input_field.color = color_vals
-            input_field.alpha = alpha
-            new_custom_material = context.scene.custom_materials.add()
-            new_custom_material.material = assigned_material
-    
-    @classmethod
-    def add_multiple_fields(cls, context, volumes):
-        for volume in volumes:
-            cls.add_field(context, volume=volume)
-
-
+from .utils import strictly_increasing
+from .inputfield_manager import InputFieldManager
+from .material_applier import MaterialApplier
+from .volume_selector import VolumeSelector
 
 # GLOBAL OPERATORS
 class AddInputField_OT_Operator(Operator):
@@ -91,17 +45,17 @@ class ResetFields_OT_Operator(Operator):
             self._reset_materials(context)
             #print("Resetting Materials...")
             #print("Resetting: now inputfields is {} long, materials is {} long".format(len(context.scene.inputfields),
-            #                                                                    len(context.scene.custom_materials)))
+            #                                                                    len(context.scene.sbv_custom_materials)))
 
     def execute(self, context):
         self._reset_field(context)
         return {"FINISHED"}
     
     def _reset_materials(self, context):
-        for material_elem in context.scene.custom_materials:
+        for material_elem in context.scene.sbv_custom_materials:
             mat = material_elem.material
             bpy.data.materials.remove(mat)
-        context.scene.custom_materials.clear()
+        context.scene.sbv_custom_materials.clear()
 
 class GenerateSpaced_OT_Operator(Operator):
 

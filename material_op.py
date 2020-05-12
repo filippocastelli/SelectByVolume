@@ -2,7 +2,8 @@ import bpy
 from bpy.types import Operator
 
 from .multi_selection_op import ChunkSelectBase
-from .utils import VolumeSelector, MaterialApplier
+from .material_applier import MaterialApplier
+from .volume_selector import VolumeSelector
 from .colors import hex_colors
 from .property_groups import supported_colormaps
 
@@ -46,13 +47,6 @@ class ApplyAllMaterials_OT_Operator(Operator):
         for field in inputfields:
             materials.append(field.material)
         return materials
-    
-    @staticmethod
-    def _get_colors(context):
-        color_0 = hex_colors["blue"]
-        color_1 = hex_colors["red"]
-
-        return [color_0, color_1]
 
 class ApplyColormap_OT_Operator(Operator):
     bl_idname = "view3d.applycolormap"
@@ -77,8 +71,12 @@ class ApplyColormap_OT_Operator(Operator):
     @staticmethod
     def _get_colors(context):
         colors = supported_colormaps[context.scene.sbv_colormaps.colormap]
-
-        hex_color_nodes = [hex_colors[color_name] for color_name in colors]
+        hex_color_nodes = []
+        for color_name in colors:
+            if "#" in color_name:
+                hex_color_nodes.append(color_name)
+            else:
+                hex_color_nodes.append(hex_colors[color_name])
         return hex_color_nodes
 
 

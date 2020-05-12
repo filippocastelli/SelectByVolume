@@ -97,8 +97,6 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
 
         multiple_selection_box = layout.box()
         multiple_selection_box.label(text="multiple range selection")
-        
-        #multiple_selection_box.row().prop_search(context.scene, "theChosenObject", bpy.data, "materials", text="base material")
 
         for i, field in enumerate(context.scene.inputfields):
             sub_box = multiple_selection_box.box()
@@ -126,6 +124,7 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
         
         materials_box = layout.box()
         materials_box.label(text="materials")
+        materials_box.row().prop_search(context.scene, "sbv_base_material_name", bpy.data, "materials", text="base material")
         apply_all_materials_row = materials_box.row()
         apply_all_materials_row.operator("view3d.applyallmaterialsop", text="Apply Materials To All Selections")
 
