@@ -71,18 +71,27 @@ def polylinear_gradient(colors, n):
     altmode = (n < len(colors) -1)
 
     steps_per_gradient = n // (len(colors) -1) if not altmode else 1
-    remainder_steps = n % (len(colors) -1)
+    remainder_steps = n % (len(colors) -1) if not altmode else 0
     
     gradient_list = []
     if len(colors) == 1:
+        # if we have just one color we make a transition to white (? maybe it's dumb)
         colors.append("#FFFFFF")
-    for i, color in enumerate(colors[:-1]):
-        if i < len(colors) -2:
-            gradient_list += linear_gradient(colors[i], colors[i+1], steps_per_gradient + 1)[0:-1]
-        else:
-            gradient_list += linear_gradient(colors[i], colors[i+1], steps_per_gradient + remainder_steps +1)[1:]
+    if len(colors) == 2:
+        # if we have two colors we just make a linear gradient
+        gradient_list = linear_gradient(colors[0], colors[1], n)
+    else:
+        # else we calculate a polylinear gradient
+        for i, color in enumerate(colors[:-1]):
+            if i < len(colors) -2:
+                gradient_list += linear_gradient(colors[i], colors[i+1], steps_per_gradient + 1)[0:-1]
+            else:
+                gradient_list += linear_gradient(colors[i], colors[i+1], steps_per_gradient + remainder_steps +1)[1:]
     
     if altmode:
+        # if we have more node colors than sampling steps
+        # we have calculated a polylinear gradient with step 1 between all nodes
+        # we select n elements from this list 
         gradient_list = even_select(gradient_list, n)
     return gradient_list   
 
