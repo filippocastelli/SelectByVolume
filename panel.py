@@ -37,6 +37,7 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
             vol_max = -1
             vol_mean = -1
             vol_std = -1
+            vol_median = -1
             vol_len = 0
         
         else:
@@ -45,6 +46,7 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
             vol_min = np.min(volumes)
             vol_max = np.max(volumes)
             vol_mean = np.mean(volumes)
+            vol_median = np.median(volumes)
             vol_std = np.std(volumes)
 
         return {
@@ -52,6 +54,7 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
             "min" : vol_min,
             "max": vol_max,
             "mean": vol_mean,
+            "median": vol_median,
             "std": vol_std
             }
 
@@ -80,8 +83,9 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
             vol_stats["max"],
         ) )
 
-        info_box.row().label(text = "mean: {:.2f}, std: {:.2f}".format(
+        info_box.row().label(text = "mean: {:.2f}, median: {:.2f}, std: {:.2f}".format(
             vol_stats["mean"],
+            vol_stats["median"],
             vol_stats["std"]
         ) )
 
