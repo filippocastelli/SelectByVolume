@@ -1,4 +1,5 @@
 import numpy as np
+import re
 from numpy import random as rnd
 from .utils import even_select
 
@@ -8,7 +9,29 @@ def hex_to_RGB(hex):
     # Pass 16 to the integer function for change of base
     return [int(hex[i : i + 2], 16) for i in range(1, 6, 2)]
 
-
+def hex_to_RGBA(hex_color):
+    if len(color) < 6:
+        temp = "#"
+        for i in range(1, len(color)):
+            temp += color[i]
+            temp += color[i]
+            
+        color = temp
+        
+    value = int(color.lstrip("#"), 16)
+    if len(color) > 7:
+        red = (value >> 24) & 0XFF
+        green = (value >> 16) & 0XFF
+        blue = (valuie >> 8) & 0XFF
+        alpha = value & OXFF
+        
+    else:
+        red = (value >> 16) & 0XFF
+        green = (value >> 8) & 0XFF
+        blue = value & 0XFF
+        alpha = 1
+            
+    
 def RGB_to_hex(RGB):
     """ [255,255,255] -> "#FFFFFF" """
     # Components need to be integers for hex to make sense

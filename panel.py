@@ -109,6 +109,7 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
             sub_box.row().prop(field, "threshold", text="vol. threshold")
             button_row = sub_box.row()
             button_row.prop(mat, "name", text="", emboss=False, icon_value=layout.icon(mat))
+            button_row.prop(field, "object_color")
             button_row.operator("view3d.selectchunkop", text="SELECT").id = i
             button_row.operator("view3d.applymaterialsop", text="APPLY MAT.").id = i
 
@@ -136,6 +137,12 @@ class SelectByVolume_PT_Panel(bpy.types.Panel):
         apply_colormap_row = materials_box.row()
         apply_colormap_row.operator("view3d.applycolormap", text="Apply Colormap")
         apply_colormap_row.prop(context.scene.sbv_colormaps, "colormap")
-
+        
         randomize_colors_row = materials_box.row()
         randomize_colors_row.operator("view3d.randomizecolors", text="Randomize Colors")
+        
+        apply_selected_colors_row = materials_box.row()
+        apply_selected_colors_row.operator("view3d.applyselectedcolors", text="Apply Selected Colors")
+        
+
+

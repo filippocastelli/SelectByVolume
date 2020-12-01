@@ -138,4 +138,3 @@ class ApplyMaterials_OT_Operator(Operator, ChunkSelectBase):
         super().execute(context)
         MaterialApplier.apply_material(self.selected_items, self.material)
         return {"FINISHED"}
-

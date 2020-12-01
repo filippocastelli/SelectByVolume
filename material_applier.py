@@ -84,13 +84,15 @@ class MaterialApplier():
         for i, material in enumerate(material_list):
             cls.apply_color_to_material(material, colormap[i], alpha=1.0, verbose=verbose)
 
+        return colormap
+        
     @staticmethod
-    def hextorgb(hex_color):
-        """convert hex color to rgb tuple"""
+    def hextorgba(hex_color):
+        """convert hex color to rgba tuple"""
         return hex_to_RGB(hex_color)
     
     @staticmethod
-    def apply_color_to_material(material, rgb_color, alpha=1.0, verbose=False):
+    def apply_color_to_material(material, color, alpha=1.0, verbose=False):
         """apply color to material
 
         Parameters
@@ -104,11 +106,12 @@ class MaterialApplier():
         verbose : bool, optional
             verbose mode, by default False
         """
+        
         if verbose:
-            print("Applying color {} to material {}".format(rgb_color, material.name))
-        material.diffuse_color = (*rgb_color, alpha)
+            print("Applying color {} to material {}".format(color, material.name))
+        material.diffuse_color = (*color, alpha)
         try: #if material has a Principled BSDF node set its Base Color
-            material.node_tree.nodes.get("Principled BSDF").inputs["Base Color"].default_value = (*rgb_color, alpha)
+            material.node_tree.nodes.get("Principled BSDF").inputs["Base Color"].default_value = (*color, alpha)
         except (IndexError, AttributeError):
             pass
 

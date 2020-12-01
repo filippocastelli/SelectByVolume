@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Filippo Maria Castelli",
     "description" : "Select meshes by their volume",
     "blender" : (2, 80, 0),
-    "version" : (0, 2, 2),
+    "version" : (0, 2, 3),
     "location" : "View3D",
     "warning" : "",
     "category" : "Generic"
@@ -28,7 +28,7 @@ from bpy.props import BoolProperty, FloatProperty, CollectionProperty, IntProper
 from .property_groups import MaterialGroup, InputFieldGroup, ColormapGroup
 from .select_volume_op import SelectByVolume_OT_Operator
 from .multi_selection_op import AddInputField_OT_Operator, ResetFields_OT_Operator, RemoveInputField_OT_Operator, ApplyMaterials_OT_Operator, SelectChunk_OT_Operator, GenerateSpaced_OT_Operator
-from .material_op import ApplyAllMaterials_OT_Operator, ApplyColormap_OT_Operator, RandomizeColors_OT_Operator
+from .material_op import ApplyAllMaterials_OT_Operator, ApplyColormap_OT_Operator, RandomizeColors_OT_Operator, ApplySelectedColors_OT_Operator
 from .panel import SelectByVolume_PT_Panel
 
 # REGISTERING / UNREGISTERING  CLASSES
@@ -52,7 +52,8 @@ classes = (SelectByVolume_OT_Operator,
            ApplyColormap_OT_Operator,
            ApplyAllMaterials_OT_Operator,
            RandomizeColors_OT_Operator,
-           GenerateSpaced_OT_Operator
+           GenerateSpaced_OT_Operator,
+           ApplySelectedColors_OT_Operator
            )
 
 fac_register, fac_unregister = bpy.utils.register_classes_factory(classes)
@@ -99,5 +100,5 @@ bpy.types.Scene.sbv_spacing_max = FloatProperty(name="Max Volume", min=0.00001, 
 bpy.types.Scene.sbv_spacing_min = FloatProperty(name="Min Volume", min=0.00001, default=0.00001, description="spacing min volume")
 bpy.types.Scene.sbv_spacings = IntProperty(name="slices", min=0, default=1, description="slices")
 bpy.types.Scene.sbv_logspace = BoolProperty(name="logspace", default=True)
-bpy.types.Scene.sbv_id_string = StringProperty(name="id_string")
+bpy.types.Scene.sbv_id_string = StringProperty(name="id_string", default="Cube")
 bpy.types.Scene.sbv_base_material_name = StringProperty()

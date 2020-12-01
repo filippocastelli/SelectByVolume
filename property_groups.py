@@ -1,5 +1,5 @@
 import bpy
-from bpy.props import FloatProperty, PointerProperty, IntProperty, IntVectorProperty
+from bpy.props import FloatProperty, PointerProperty, IntProperty, IntVectorProperty, FloatVectorProperty
 from bpy.types import Material, PropertyGroup
 
 class InputFieldGroup(PropertyGroup):
@@ -8,6 +8,14 @@ class InputFieldGroup(PropertyGroup):
     material : PointerProperty(
         name = "Material",
         type = bpy.types.Material
+    )
+    
+    object_color : FloatVectorProperty(
+        name = "object_color",
+        subtype = "COLOR_GAMMA",
+        default = (1.0, 1.0, 1.0),
+        min = 0.0, max = 1.0,
+        description = "if_color_picker"
     )
 
 # THIS SHOULD KEEP TRACK OF ALL CREATED CUSTOM MATERIALS
@@ -22,6 +30,14 @@ class MaterialGroup(PropertyGroup):
         name = "color",
         min = 0,
         max = 255
+    )
+    
+    object_color = FloatVectorProperty(
+        name = "object_color",
+        subtype = "COLOR",
+        default = (1.0, 1.0, 1.0),
+        min = 0.0, max = 1.0,
+        description = "color picker"
     )
     
     alpha : FloatProperty(

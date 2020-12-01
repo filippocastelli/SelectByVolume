@@ -46,9 +46,11 @@ class InputFieldManager():
             color_vals, alpha = MaterialApplier.apply_rnd_color_to_material(assigned_material, return_color=True)
             input_field.material = assigned_material
             input_field.color = color_vals
+            input_field.object_color = color_vals
             input_field.alpha = alpha
             new_custom_material = context.scene.sbv_custom_materials.add()
             new_custom_material.material = assigned_material
+            new_custom_material.object_color = color_vals
     
     @classmethod
     def add_multiple_fields(cls, context, volumes):
